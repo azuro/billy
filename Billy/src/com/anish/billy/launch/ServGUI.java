@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
+import com.anish.billy.FIOS.monthlyRate;
 import com.anish.billy.FIOS.setDB;
 
 import javax.swing.JFileChooser;
@@ -88,7 +89,7 @@ public class ServGUI extends JFrame {
 		JMenuItem mntmSetMonthlyRate = new JMenuItem("Set Monthly Rate");
 		mntmSetMonthlyRate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				initialize.setSubscription();
+				monthlyRate.setMonthlyRateGUI();
 			}
 		});
 		mntmSetMonthlyRate.setIcon(new ImageIcon(ServGUI.class.getResource("/com/alee/extended/filechooser/icons/ok.png")));

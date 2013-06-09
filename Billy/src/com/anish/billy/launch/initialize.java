@@ -20,12 +20,4 @@ public class initialize {
 		
 	}
 	
-	public static void setDatabase(File dbFile){
-		System.out.println("Database Set: "+dbFile.getName());
-	}
-	
-	public static void setSubscription(){
-		System.out.println("@TODO: Create a set Monthly Rate Method.");
-		
-	}
 }
