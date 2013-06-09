@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="src/JDBI/jdbi-2.7.1.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-annotations-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-client-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-continuation-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-deploy-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-http-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-io-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-jaas-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-jmx-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-jndi-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-plus-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-proxy-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-rewrite-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-security-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-server-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-servlet-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-servlets-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-util-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-webapp-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/jetty-xml-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="src/Jetty/servlet-api-3.0.jar"/>
+	<classpathentry kind="lib" path="src/SQLite/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry kind="lib" path="src/WebLookAndFeel/WebLookAndFeel.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
