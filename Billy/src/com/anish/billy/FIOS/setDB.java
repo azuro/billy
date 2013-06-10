@@ -2,9 +2,10 @@ package com.anish.billy.FIOS;
 
 import java.io.File;
 
+import com.anish.billy.Global;
+
 public class setDB {
 	public static void set(File f){
-		System.out.println("File Selected:"+f.getName());
-		
+		Global.setDb(f.getAbsolutePath());
 	}
 }

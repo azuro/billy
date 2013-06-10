@@ -4,16 +4,10 @@ import java.awt.EventQueue;
 
 import javax.swing.JOptionPane;
 
+import com.anish.billy.Global;
+
 public class monthlyRate {
-private static double rate;
 
-public static synchronized double get() {
-	return rate;
-}
-
-public static synchronized void set(double rate) {
-	monthlyRate.rate = rate;
-}
 	
 public static void setMonthlyRateGUI(){
 	EventQueue.invokeLater(new Runnable(){
@@ -23,7 +17,7 @@ public static void setMonthlyRateGUI(){
 			String getRate = JOptionPane.showInputDialog("Set Monthly Rate to:");
 			try{
 			double dMonthlyRate = Double.parseDouble(getRate);
-			monthlyRate.set(dMonthlyRate);
+			Global.set(dMonthlyRate);
 			}catch(Exception e){
 				JOptionPane.showMessageDialog(null, "Error:"+e.getMessage());
 				
