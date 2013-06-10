@@ -17,7 +17,7 @@ public static void setMonthlyRateGUI(){
 			String getRate = JOptionPane.showInputDialog("Set Monthly Rate to:");
 			try{
 			double dMonthlyRate = Double.parseDouble(getRate);
-			Global.set(dMonthlyRate);
+			Global.set(dMonthlyRate, true);
 			}catch(Exception e){
 				JOptionPane.showMessageDialog(null, "Error:"+e.getMessage());
 				

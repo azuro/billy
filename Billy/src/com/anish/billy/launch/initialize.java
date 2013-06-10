@@ -1,5 +1,9 @@
 package com.anish.billy.launch;
 
+import javax.swing.JOptionPane;
+
+import com.anish.billy.Global;
+
 
 public class initialize {
 	private static Thread server;
@@ -7,7 +11,13 @@ public class initialize {
 	private static boolean running = false;
 	
 	public static void main(String[] args){
+		//Initialization Section
+		//Do some Housekeeping here:
+			Global.readValues();
+			JOptionPane.showMessageDialog(null, "Database Path:"+Global.getDb()+"\nMonthly Rate:"+Global.get());
+		//Start Console
 		ServGUI.start();
+		
 	}
 
 	public static void startServer(){
