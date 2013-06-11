@@ -12,12 +12,15 @@ public class initialize {
 	
 	public static void main(String[] args){
 		//Initialization Section
+		
+		//Splash Screen:
+		SplashScreen.Show();
 		//Do some Housekeeping here:
 			Global.readValues();
+			SplashScreen.terminate();
 			JOptionPane.showMessageDialog(null, "Database Path:"+Global.getDb()+"\nMonthly Rate:"+Global.get());
 		//Start Console
 		ServGUI.start();
-		
 	}
 
 	public static void startServer(){
