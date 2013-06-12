@@ -16,11 +16,24 @@ public class initialize {
 		//Splash Screen:
 		SplashScreen.Show();
 		//Do some Housekeeping here:
-			Global.readValues();
+		
+		
+		
+		//Read Configuration Files	
+		if(Global.readValues()){
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			SplashScreen.terminate();
-			JOptionPane.showMessageDialog(null, "Database Path:"+Global.getDb()+"\nMonthly Rate:"+Global.get());
 		//Start Console
 		ServGUI.start();
+		}
+		//First Run
+		else{
+			FirstRunGUI.start();
+		}
 	}
 
 	public static void startServer(){
@@ -30,7 +43,7 @@ public class initialize {
 			@Override
 			public void run() {
 				System.out.println("Hello World");
-				while(running){};//Run the server
+				while(running);//Run the server
 				System.out.println("Server Stopped");
 			}
 						

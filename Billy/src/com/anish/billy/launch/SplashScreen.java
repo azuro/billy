@@ -17,7 +17,7 @@ public class SplashScreen {
 	       f.setLocationRelativeTo(null);
 	       f.setVisible(true);
 	    }
-	    static void terminate(){
+	    public static void terminate(){
 	        f.dispose();
 	    }
 

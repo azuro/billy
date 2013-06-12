@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import com.anish.billy.launch.SplashScreen;
+
 public class Global {
 	private static double rate;
 	private static String db;
@@ -46,8 +48,8 @@ public class Global {
 		}
 		
 	}
-	
-	public static void readValues(){
+	//If Successful: true, else: false
+	public static boolean readValues(){
 		Properties prop = new Properties();
 		try{
 			
@@ -55,8 +57,11 @@ public class Global {
 			
 			setDb(prop.getProperty("DbPath"),false);
 			set(Double.parseDouble(prop.getProperty("MonthlyRate")), false);
+			
+			return true;
 		}catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			SplashScreen.terminate();
+			return false;
 		}
 	}
 }
