@@ -3,6 +3,7 @@ package com.anish.billy.launch;
 import javax.swing.JOptionPane;
 
 import com.anish.billy.Global;
+import com.anish.billy.DataBase.Db;
 
 
 public class initialize {
@@ -43,6 +44,8 @@ public class initialize {
 			@Override
 			public void run() {
 				System.out.println("Hello World");
+				//Initialize Database
+				Db.initialize();
 				while(running);//Run the server
 				System.out.println("Server Stopped");
 			}

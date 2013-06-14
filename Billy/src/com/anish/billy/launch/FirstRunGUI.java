@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JSeparator;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -17,6 +18,7 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.security.acl.LastOwnerException;
 
 import javax.swing.JButton;
@@ -148,6 +150,7 @@ public class FirstRunGUI extends JFrame {
 		btnBrowse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser choose = new JFileChooser();
+				choose.addChoosableFileFilter(new FileNameExtensionFilter("SQLite 3 Database Files", "db"));
 				if(choose.showDialog(getParent(),"Open / Save") == JFileChooser.APPROVE_OPTION){
 					textField.setText(choose.getSelectedFile().getAbsolutePath());
 					

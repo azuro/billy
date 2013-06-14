@@ -13,6 +13,7 @@ import com.anish.billy.launch.SplashScreen;
 public class Global {
 	private static double rate;
 	private static String db;
+	private static double ConnRate;
 
 	public static synchronized String getDb() {
 		return db;
@@ -34,6 +35,18 @@ public class Global {
 		updateValues();
 	}
 	
+	
+	
+	public static synchronized double getConnRate() {
+		return ConnRate;
+	}
+
+	public static synchronized void setConnRate(double connRate, boolean change) {
+		ConnRate = connRate;
+		if(change)
+			updateValues();
+	}
+
 	private static void updateValues(){
 		Properties prop = new Properties();
 		
@@ -41,6 +54,7 @@ public class Global {
 			
 			prop.setProperty("DbPath", getDb());
 			prop.setProperty("MonthlyRate", String.valueOf(get()));
+			prop.setProperty("ConnCharge", String.valueOf(getConnRate()));
 			
 			prop.store(new FileOutputStream("Library"+File.separator+"Billy.config"), null);
 		}catch(IOException e){
@@ -57,6 +71,8 @@ public class Global {
 			
 			setDb(prop.getProperty("DbPath"),false);
 			set(Double.parseDouble(prop.getProperty("MonthlyRate")), false);
+			setConnRate(Double.parseDouble(prop.getProperty("ConnCharge")),false);
+			
 			
 			return true;
 		}catch (Exception e) {
