@@ -1,18 +1,22 @@
 package com.anish.billy.DataBase;
 
-public class SQLQuery {
+import java.sql.ResultSet;
+
+public class Table {
 	String query;
 	int lastCall;
-	SQLQuery(){
+	String Table;
+	Table(String Table){
 		query="";
+		this.Table = Table;
 	}
-	public synchronized SQLQuery UPDATE(){
-		this.query = "UPDATE ";
+	public synchronized Table UPDATE(){
+		this.query = "UPDATE "+this.Table+" ";
 		lastCall = 0;
 		return this;
 	}
-	public synchronized SQLQuery INSERT(String Table, Value[] values){
-		this.query = "INSERT into "+Table+" values(";
+	public synchronized Table INSERT(Value[] values){
+		this.query = "INSERT into "+this.Table+" values(";
 		
 		for(int iter = 0;iter<values.length;iter++){
 			this.query = this.query+values[iter].get();
@@ -25,17 +29,17 @@ public class SQLQuery {
 		lastCall = 1;
 		return this;
 	}
-	public synchronized SQLQuery and(){
+	public synchronized Table and(){
 		this.query =this.query + ",";
 		lastCall = 2;
 		return this;
 	}
-	public synchronized SQLQuery WHERE(){
+	public synchronized Table WHERE(){
 		this.query = this.query + " WHERE ";
 		lastCall = 3;
 		return this;
 	}
-	public synchronized SQLQuery addParameter(String Column){
+	public synchronized Table addParameter(String Column){
 		if(lastCall==4){
 			this.and();
 		}
@@ -43,7 +47,7 @@ public class SQLQuery {
 		lastCall = 4;
 		return this;
 	}
-	public synchronized SQLQuery addParameter(String Column, String Value){
+	public synchronized Table addParameter(String Column, String Value){
 		if(lastCall==4){
 			this.and();
 		}
@@ -51,7 +55,7 @@ public class SQLQuery {
 		lastCall = 4;
 		return this;
 	}
-	public synchronized SQLQuery addParameter(String Column, int Value){
+	public synchronized Table addParameter(String Column, int Value){
 		if(lastCall==4){
 			this.and();
 		}
@@ -59,7 +63,7 @@ public class SQLQuery {
 		lastCall = 4;
 		return this;
 	}
-	public synchronized SQLQuery addParameter(String Column, double Value){
+	public synchronized Table addParameter(String Column, double Value){
 		if(lastCall==4){
 			this.and();
 		}
@@ -67,40 +71,53 @@ public class SQLQuery {
 		lastCall = 4;
 		return this;
 	}
-	public synchronized SQLQuery SET(){
+	public synchronized Table SET(){
 		this.query = this.query + " SET ";
 		lastCall = 5;
 		return this;
 	}
-	public synchronized SQLQuery SELECT(){
+	public synchronized Table SELECT(){
 		this.query = "SELECT ";
 		lastCall = 6;
 		return this;
 	}
-	public synchronized SQLQuery all(){
+	public synchronized Table all(){
 		this.query =this.query + " * ";
 		lastCall = 7;
 		return this;
 	}
-	public synchronized SQLQuery from(){
-		this.query =this.query + " FROM ";
+	public synchronized Table fromTable(){
+		this.query =this.query + " FROM "+this.Table;
 		lastCall = 8;
 		return this;
 	}
 	
-	public synchronized SQLQuery table(String Table){
-		this.query = this.query+" "+Table+" ";
-		lastCall = 9;
-		return this;
-	}
 	public String toString(){
 		System.out.println(query);
 		return null;
 	}
 	
+	public ResultSet executeQuery() throws java.sql.SQLException{
+		String exeQue = this.query;
+		clear();
+		return Db.query.executeQuery(exeQue);
+	}
+	
+	public void execute() throws java.sql.SQLException{
+		String exeQue = this.query;
+		clear();
+		Db.query.execute(exeQue);
+	}
+	
+	public void clear(){
+		this.query = "";
+	}
+	
 	public static void main(String[] args){
-		SQLQuery collect = new SQLQuery();	
-		collect.INSERT("Accounts",new Value[]{new Value("My CustID"), new Value("Anish Basu"), new Value("8961051211"), new Value(42.0)});
+		Table collect = new Table("Basu");	
+		collect.UPDATE()
+			 .SET().addParameter("Anwesha", 1)
+			 .WHERE().addParameter("id", 20);
 		collect.toString();
 	}
 }

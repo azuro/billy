@@ -18,6 +18,7 @@ public class Value {
 	}
 	Value(String arg){
 		ValueS = arg;
+		ValueS = ValueS.replace('\'', '\u0080');
 		type = TEXT;
 	}
 	public Object get(){
@@ -30,5 +31,9 @@ public class Value {
 			return "'"+ValueS+"'";
 		}
 		return null;
+	}
+	
+	public static String parsedString(String ValueString){
+		return ValueString.replace('\u0080', '\'');
 	}
 }

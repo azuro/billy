@@ -11,10 +11,35 @@ public class Queries {
 	public static void addCustomer(String name, String address, String area, String date,String phone,boolean connpaid){
 		try {
 			String CustID = generateCustID(area);
-			                                              //ID         Name    Address     Area     Date     Phone       Connection Paid?    Balance   
-			Db.query.execute("insert into accounts values('"+CustID+"','"+name+"','"+address+"','"+area+"','"+date+"','"+phone+"',"+((connpaid)?1:0)+","+((connpaid)?0:Global.getConnRate())+")");
-			Db.query.execute("insert into transactions values("+CustID+",'Connection Charge',"+date+","+(-1*Global.getConnRate())+")");
-			Db.query.execute("insert into transactions values("+CustID+",'Connection Charge Paid',"+date+","+Global.getConnRate()+")");
+			//Create Customer Entry
+			Table Accounts = new Table("Accounts");
+			Accounts.INSERT(new Value[]{                                            //Column
+										new Value(CustID),                          //Customer ID
+									    new Value(name),                            //Name
+									    new Value(address),                         //Address
+									    new Value(area),                            //Area
+									    new Value(date),                            //Date of Connection
+									    new Value(phone),                           //Phone Number
+									    new Value((connpaid)?1:0),                  //Connection Charge Paid?
+										new Value((connpaid)?0:Global.getConnRate())//Current Balance
+							}).execute();
+			//Create Connection Charge Entr(ies)
+			Table Transactions = new Table("Transactions");
+			Transactions.INSERT(new Value[]{                      //Columns
+								new Value(CustID),                //Customer ID
+								new Value("Connection Charge"),   //Transaction Name
+								new Value(date),                  //Transaction Date
+								new Value(-1*Global.getConnRate())//Amount
+			}).execute();
+			if(connpaid){
+				Transactions.INSERT(new Value[]{                      		//Columns
+									new Value(CustID),                		//Customer ID
+									new Value("Connection Charge Paid"),    //Transaction Name
+									new Value(date),                  		//Transaction Date
+									new Value(Global.getConnRate())			//Amount
+				}).execute();
+			}
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -22,23 +47,51 @@ public class Queries {
 	}
 	
 	private static String generateCustID(String area)throws SQLException{
-		ResultSet rs = Db.query.executeQuery("select abbr,last from area where name='"+area+"'");
+		Table Area = new Table("Area");
+		ResultSet rs = Area.SELECT()
+						.addParameter("abbr")
+						.addParameter("last")
+					   .fromTable().WHERE()
+					    .addParameter("Name", area)
+					   .executeQuery();
 		rs.next();
 		String abbr = rs.getString("abbr");
 		int lastCount = rs.getInt("last")+1;
-		Db.query.execute("update area set last="+lastCount+" where abbr='"+abbr+"'");
+		Area.UPDATE()
+			.SET()
+			 .addParameter("Last", lastCount)
+			.WHERE()
+			 .addParameter("abbr", abbr)
+			.execute();
 		return abbr.toUpperCase()+"-"+lastCount;
 	}
 	
 	//Add Payment:
 	public static void payment(String CustID, double amount, String CollID){
 		try {
-			Db.query.execute("insert into transactions values("+CustID+",'Customer Payment','"+Global.DF.format(Calendar.getInstance().getTime())+"',"+amount+")");
-			ResultSet balanceResult = Db.query.executeQuery("select balance from accounts where custid='"+CustID+"'");
+			//Add Transaction to History
+			Table Transactions = new Table("Transactions");
+			Transactions.INSERT(new Value[]{                      //Columns
+								new Value(CustID),                //Customer ID
+								new Value("Customer Payment"),    //Transaction Name
+								new Value(Global.DF.format(Calendar.getInstance().getTime())),//Transaction Date
+								new Value(amount)//Amount
+			}).execute();
+			//Modify Customer Balance
+			Table Accounts = new Table("Accounts");
+			ResultSet balanceResult = Accounts.SELECT().addParameter("Balance").fromTable().WHERE().addParameter("CustID", CustID).executeQuery();
 			balanceResult.next();
 			double balance = balanceResult.getFloat("balance");
 			balance = balance-amount;
-			Db.query.execute("update accounts set balance="+balance+" where custid='"+CustID+"'");
+			Accounts.UPDATE().SET().addParameter("Balance",balance).WHERE().addParameter("CustID", CustID).execute();
+			//Give Commission to Collector:
+			Table Collectors = new Table("Collectors");
+				//Collector ID[CollID](String) Commission[Commission](Float)  Balance[Balance](Float)
+			ResultSet collectorData = Collectors.SELECT().addParameter("Commission").addParameter("Balance").fromTable().WHERE().addParameter("CollID", CollID).executeQuery();
+			collectorData.next();
+			float commission = collectorData.getFloat("Commission");
+			float currBalance = collectorData.getFloat("Balance");
+			Collectors.UPDATE().SET().addParameter("Balance", currBalance+(commission*currBalance)).WHERE().addParameter("CollID",CollID).execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
