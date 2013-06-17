@@ -29,23 +29,25 @@ public class Queries {
 								new Value(CustID),                //Customer ID
 								new Value("Connection Charge"),   //Transaction Name
 								new Value(date),                  //Transaction Date
-								new Value(-1*Global.getConnRate())//Amount
+								new Value(Global.getConnRate())//Amount
 			}).execute();
 			if(connpaid){
 				Transactions.INSERT(new Value[]{                      		//Columns
 									new Value(CustID),                		//Customer ID
 									new Value("Connection Charge Paid"),    //Transaction Name
 									new Value(date),                  		//Transaction Date
-									new Value(Global.getConnRate())			//Amount
+									new Value(-1*Global.getConnRate())		//Amount
 				}).execute();
 			}
+			else
+				updateBalance(-1*Global.getConnRate());
 			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+	//Generate Customer ID
 	private static String generateCustID(String area)throws SQLException{
 		Table Area = new Table("Area");
 		ResultSet rs = Area.SELECT()
@@ -79,19 +81,43 @@ public class Queries {
 			}).execute();
 			//Modify Customer Balance
 			Table Accounts = new Table("Accounts");
-			ResultSet balanceResult = Accounts.SELECT().addParameter("Balance").fromTable().WHERE().addParameter("CustID", CustID).executeQuery();
+			ResultSet balanceResult = Accounts.SELECT()
+													.addParameter("Balance")
+													.fromTable()
+											  .WHERE()
+											  		.addParameter("CustID", CustID)
+											  .executeQuery();
+			
 			balanceResult.next();
 			double balance = balanceResult.getFloat("balance");
 			balance = balance-amount;
-			Accounts.UPDATE().SET().addParameter("Balance",balance).WHERE().addParameter("CustID", CustID).execute();
-			//Give Commission to Collector:
+			Accounts.UPDATE()
+				.SET()
+					.addParameter("Balance",balance)
+				.WHERE()
+					.addParameter("CustID", CustID)
+				.execute();
+			//Give Commission Credit to Collector:
 			Table Collectors = new Table("Collectors");
 				//Collector ID[CollID](String) Commission[Commission](Float)  Balance[Balance](Float)
-			ResultSet collectorData = Collectors.SELECT().addParameter("Commission").addParameter("Balance").fromTable().WHERE().addParameter("CollID", CollID).executeQuery();
+			ResultSet collectorData = Collectors.SELECT()
+													.addParameter("Commission")
+													.addParameter("Balance")
+													.fromTable()
+												.WHERE()
+													.addParameter("CollID", CollID)
+												.executeQuery();
 			collectorData.next();
 			float commission = collectorData.getFloat("Commission");
 			float currBalance = collectorData.getFloat("Balance");
-			Collectors.UPDATE().SET().addParameter("Balance", currBalance+(commission*currBalance)).WHERE().addParameter("CollID",CollID).execute();
+			Collectors.UPDATE()
+				.SET()
+					.addParameter("Balance", currBalance+(commission*currBalance))
+				.WHERE()
+					.addParameter("CollID",CollID)
+				.execute();
+			//Update Balance after payment:
+			updateBalance(amount);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,6 +125,82 @@ public class Queries {
 		
 	}
 	
-	//
+	//Pay Connection Fee
+	public void payConnectionFee(String CustID){
+		Table Transactions = new Table("Transactions");
+		try {
+			Transactions.INSERT(new Value[]{				//Columns
+					new Value(CustID),                		//Customer ID
+					new Value("Connection Charge Paid"),    //Transaction Name
+					new Value(Global.DF.format(Calendar.getInstance().getTime())),//Transaction Date
+					new Value(-1*Global.getConnRate())		//Amount
+			}).execute();
+			
+			Table Accounts = new Table("Accounts");
+			ResultSet rs = Accounts.SELECT().addParameter("Balance").fromTable().WHERE().addParameter("CustID", CustID).executeQuery();
+			rs.next();
+			double cbalance = rs.getFloat("Balance");
+			cbalance = cbalance - Global.getConnRate();
+			Accounts.UPDATE().SET().addParameter("Balance", cbalance).WHERE().addParameter("CustID", CustID);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//Pay Collectors:
+	static void payCollector(String CollID, double amount){
+		Table Collectors = new Table("Collectors");
+		try {
+			ResultSet CollBall = Collectors.SELECT().addParameter("Balance").fromTable().WHERE().addParameter("CollID", CollID).executeQuery();
+			CollBall.next();
+			double currBalance = CollBall.getFloat("Balance");
+			if(currBalance < amount)
+				throw new SQLException("Withdrawal amount greater than available balance");
+			else{
+				currBalance = currBalance - amount;
+				Collectors.UPDATE().SET().addParameter("Balance", currBalance).WHERE().addParameter("CollID", CollID).execute();			
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	static void incrementAfterAMonth(String CustID){
+		Table Account = new Table("Account");
+		try {
+			ResultSet rs = Account.SELECT().addParameter("Balance").WHERE().addParameter("CustID", CustID).executeQuery();
+			rs.next();
+			float currBalance = rs.getFloat("Balance");
+			Account.UPDATE().SET().addParameter("Balance", currBalance+Global.get()).WHERE().addParameter("CustID", CustID).execute();
+			Table Transactions = new Table("Transactions");
+			Transactions.INSERT(new Value[]{          //Columns
+					new Value(CustID),                //Customer ID
+					new Value("Monthly Subscription Charge"),//Transaction Name
+					new Value(Global.DF.format(Calendar.getInstance().getTime())),//Transaction Date
+					new Value(Global.get())			  //Amount
+			}).execute();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	//Update Company Balance +ve Debt Clearance, -ve for Debt Accumulation
+	static void updateBalance(double amount) throws SQLException{
+		Table Misc = new Table("Misc");
+		Misc.UPDATE()
+			.SET()
+				.addParameter("NumeralValue", amount)
+			.WHERE()
+				.addParameter("Name", "Current Balance")
+			.execute();
+		
+	}
 	
 }
