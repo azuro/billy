@@ -10,8 +10,8 @@ Things to be implemented:
 
 ####Database
 
- - SQLite Database
- - JDBI Interfaces to make database queries more efficient
+ - SQLite Database _Done_
+ - --JDBI Interfaces to make database queries more efficient-- Used own implementation.
 
 ####Handlers
  - Add:
@@ -48,7 +48,6 @@ Things to be implemented:
 I used the following projects, and am immensely thankful to the authors of these libraries:
 
  - [SQLite-JDBC](https://bitbucket.org/xerial/sqlite-jdbc)
- - [JDBI](http://www.jdbi.org/)
  - [Jetty](http://www.eclipse.org/jetty/)
  - [Web Look and Feel](http://weblookandfeel.com/)
  - [Divshot](http://www.divshot.com/)
