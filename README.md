@@ -10,7 +10,7 @@ Things to be implemented:
 
 ####Database
 
- - SQLite Database _Done_
+ - SQLite Database **_Done_**
  - ~~JDBI Interfaces to make database queries more efficient~~ Used own implementation.
 
 ####Handlers

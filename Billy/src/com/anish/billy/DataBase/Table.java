@@ -51,7 +51,8 @@ public class Table {
 		if(lastCall==4){
 			this.and();
 		}
-		this.query = this.query + " "+Column+" = '"+Value+"' ";
+		com.anish.billy.DataBase.Value param = new com.anish.billy.DataBase.Value(Value);
+		this.query = this.query + " "+Column+" = "+param.get()+" ";
 		lastCall = 4;
 		return this;
 	}
@@ -111,13 +112,5 @@ public class Table {
 	
 	public void clear(){
 		this.query = "";
-	}
-	
-	public static void main(String[] args){
-		Table collect = new Table("Basu");	
-		collect.UPDATE()
-			 .SET().addParameter("Anwesha", 1)
-			 .WHERE().addParameter("id", 20);
-		collect.toString();
 	}
 }

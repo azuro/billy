@@ -41,13 +41,17 @@ public class Db{
 			//Transactions: ID  Type   Date   Amount
 			Db.query.execute("create table transactions(id string,type string,dateTrans date,amount float)");
 			
-			Db.query.execute("create table collector(collid string,commission float,balance float)");
+			Db.query.execute("create table collector(collid string,name string,commission float,balance float)");
 			
 			Db.query.execute("create table misc(name string,numeralvalue float)");
 			
 			Db.query.execute("create table area(name string,abbr string, last int)");
 			
 			Db.query.execute("insert into misc values('Current Balance',0)");
+			
+			Db.query.execute("insert to misc values('Collector',0)");
+			
+			Db.query.execute("insert into misc values('Maintainance', 0)");
 		}finally{
 			if(Db.connection!=null)
 				connection.close();
