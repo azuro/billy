@@ -52,6 +52,8 @@ public class Db{
 			Db.query.execute("insert to misc values('Collector',0)");
 			
 			Db.query.execute("insert into misc values('Maintainance', 0)");
+			
+			Db.query.execute("create table performance(time date,balance float)");
 		}finally{
 			if(Db.connection!=null)
 				connection.close();

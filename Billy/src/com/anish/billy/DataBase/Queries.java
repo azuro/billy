@@ -29,6 +29,7 @@ public class Queries {
 			String date, String phone, boolean connpaid) {
 		try {
 			String CustID = generateCustID(area);
+			
 			// Create Customer Entry
 			Table Accounts = new Table("Accounts");
 			Accounts.INSERT(new Value[] { // Column
@@ -317,7 +318,7 @@ public class Queries {
 					currBalance = currBalance - amount;
 					Collectors.UPDATE().SET().addParameter("Balance", currBalance)
 							.WHERE().addParameter("CollID", CollID).execute();
-					updateBalance(amount);
+					updateBalance(-1*amount);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -374,9 +375,16 @@ public class Queries {
 	// Update Company Balance +ve Debt Clearance, -ve for Debt Accumulation
 		static void updateBalance(double amount) throws SQLException {
 			Table Misc = new Table("Misc");
-			Misc.UPDATE().SET().addParameter("NumeralValue", amount).WHERE()
+			ResultSet balance = Misc.SELECT().addParameter("NumeralValue").fromTable().WHERE().addParameter("Name", "Current Balance").executeQuery();
+			float bA = balance.getFloat("NumeralValue");
+			double newBal = bA + amount; 
+			Misc.UPDATE().SET().addParameter("NumeralValue", newBal).WHERE()
 					.addParameter("Name", "Current Balance").execute();
-
+			Table Performance = new Table("Performance");
+			Performance.INSERT(new Value[]{
+				new Value(System.currentTimeMillis()),
+				new Value(newBal)		
+			}).execute();
 		}
 		
 		static void MiscPurchase(double amount){
